@@ -28,13 +28,14 @@ jobs:
         run: composer install
 
       - name: Set up database environment
-        run: |
-          mysql -h ${{ secrets.DB_HOST }} -u ${{ secrets.DB_USER }} -p${{ secrets.DB_PASS }} -e "CREATE DATABASE IF NOT EXISTS ${{ secrets.DB_NAME }}"
+        uses: actions/setup-mysql@v1  # Используем Action для настройки MySQL
+        with:
+          mysql-version: '8.0'          # Версия MySQL
+          mysql-user: ${{ secrets.DB_USER }}   # Пользователь
+          mysql-password: ${{ secrets.DB_PASS }}  # Пароль
         env:
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASS: ${{ secrets.DB_PASS }}
+          DB_HOST: ${{ secrets.DB_HOST }}      # Хост
+          DB_NAME: ${{ secrets.DB_NAME }}      # Имя базы данных
 
       - name: Setup ProcessWire
         run: php processwire/console setup
