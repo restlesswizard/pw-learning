@@ -1,0 +1,44 @@
+name: Deploy ProcessWire Site
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: xdebug, mbstring, curl, gd, openssl
+
+      - name: Install Composer
+        uses: shivammathur/setup-composer@v2
+        with:
+          composer-version: '2.2'
+
+      - name: Install dependencies
+        run: composer install
+
+      - name: Set up database environment
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+
+      - name: Setup ProcessWire
+        run: php processwire/console setup
+
+      - name: Build ProcessWire
+        run: php processwire/console build
+
+      - name: Deploy to server
+        uses: ... # используйте подходящий action для деплоя на сервер

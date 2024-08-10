@@ -1,0 +1,4 @@
+site/assets/*
+site/logs/*
+site/tmp/*
+site/config.php
